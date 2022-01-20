@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <cmath>
-#include <fftw3.h>
 #include "densematrix.h"
 #include <vector>
 #include "harmonic.h"

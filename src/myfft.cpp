@@ -24,71 +24,10 @@ std::vector<std::vector<densematrix>> myfft::fft(densematrix input, int mym, int
     int* inembed = n;
     int* onembed = n;
     
-    fftw_complex* transformed = (fftw_complex*)fftw_malloc(sizeof(fftw_complex) * numtimeevals * numtransforms);
-     
-    // The input data is real, We thus use 
-    // 'fftw_plan_many_dft_r2c' to save half the memory.
-    fftw_plan myplan = fftw_plan_many_dft_r2c(transformdim, n, numtransforms, input.getvalues(), inembed, istride, idist, transformed, onembed, ostride, odist, FFTW_ESTIMATE);
-                 
-    
-    ////////// Compute the FFT as described in the plan.
-    // Parallelise with openmp.
-    
-//#pragma omp parallel --> ONLY ON EXECUTE!!!!!!!!!!!!!!
-//{   http://www.fftw.org/fftw3_doc/Usage-of-Multi_002dthreaded-FFTW.html#Usage-of-Multi_002dthreaded-FFTW
-    fftw_execute(myplan);
-    
-    
-    ////////// Destroy the plan:
-    fftw_destroy_plan(myplan);  
-    
-    
-    ////////// Create the output.
-    // There are numtimeevals harmonics + the sin0 entry at the begining.
+
     std::vector<std::vector<densematrix>> output(numtimeevals + 1, std::vector<densematrix> {});
     
-    // All harmonics still have to be scaled. 
-    // The constant term has an extra 0.5 scaling factor.
-    double scalingfactor = 2.0 / numtimeevals;
-    double constantscalingfactor = 1.0 / numtimeevals;
-    
-    for (int h = 0; h < numtimeevals; h++)
-    {
-        // Our harmonic number is at +1 because of the sin0 term.
-        int harm = h+1;
-        
-        // The current harmonic has a frequency currentfreq*f0.
-        int currentfreq = harmonic::getfrequency(harm);
-        
-        densematrix currentmat(mym, myn);
-        double* currentvals = currentmat.getvalues();
-        
-        if (harmonic::iscosine(harm))
-        {
-            // Constant term:
-            if (currentfreq == 0)
-            {
-                for (int i = 0; i < mym*myn; i++)
-                 currentvals[i] = transformed[currentfreq*mym*myn+i][0] * constantscalingfactor;
-            }
-            else
-            {
-                for (int i = 0; i < mym*myn; i++)
-                    currentvals[i] = transformed[currentfreq*mym*myn+i][0] * scalingfactor;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < mym*myn; i++)
-                currentvals[i] = transformed[currentfreq*mym*myn+i][1] * scalingfactor;
-        }
-        output[harm] = {currentmat};
-    }
-    
 
-    ////////// Free the fftw data.
-    fftw_free(transformed);
-    
     
     removeroundoffnoise(output);
     
