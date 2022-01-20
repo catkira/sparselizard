@@ -3,8 +3,8 @@
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
-LIBS = -L ~/SLlibs/petsc/arch-linux2-c-opt/lib -l openblas -l petsc -L ~/SLlibs/slepc/arch-linux2-c-opt/lib -l slepc
-INCL = -I ~/SLlibs/petsc/include/petsc/mpiuni -I ~/SLlibs/petsc/arch-linux2-c-opt/externalpackages/git.openblas -I ~/SLlibs/petsc/include/ -I ~/SLlibs/petsc/arch-linux2-c-opt/include/ -I ~/SLlibs/slepc/include -I ~/SLlibs/slepc/arch-linux2-c-opt/include
+LIBS = -L ~/SLlibs/petsc/arch-linux-c-opt/lib -l openblas -l petsc -L ~/SLlibs/slepc/arch-linux-c-opt/lib -l slepc
+INCL = -I ~/SLlibs/petsc/include/petsc/mpiuni -I ~/SLlibs/petsc/arch-linux-c-opt/externalpackages/git.openblas -I ~/SLlibs/petsc/include/ -I ~/SLlibs/petsc/arch-linux-c-opt/include/ -I ~/SLlibs/slepc/include -I ~/SLlibs/slepc/arch-linux-c-opt/include
 endif
 ifeq ($(UNAME), Darwin)
 LIBS = -L ~/SLlibs/petsc/arch-darwin-c-opt/lib -l openblas -l petsc -L ~/SLlibs/slepc/arch-darwin-c-opt/lib -l slepc
